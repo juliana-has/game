@@ -3,9 +3,6 @@
 
 #include "types.h"
 
-// ============================================================
-//  Modulo de enemigos
-// ============================================================
 
 struct Enemy {
     Vec2 pos;
@@ -16,8 +13,7 @@ struct Enemy {
     int  tickCounter;
     Vec2 patrol[MAX_PATROL];
     int  patrolLen;
-    // Conciencia: ultima posicion conocida del jugador
-    // (siempre sabe donde estas — rango infinito)
+  
     Vec2 lastKnownPlayer;
 };
 
@@ -27,8 +23,6 @@ int  enemy_dist(Vec2 a, Vec2 b);
 bool enemy_catches(const Enemy *e, Vec2 playerPos);
 void enemy_activate_conscience(Enemy *enemies, int maxCount);
 
-// Devuelve el tipo del enemigo que atrapo al jugador, o -1 si ninguno
-// (usado para diferenciar mensaje de muerte)
 int  enemy_who_caught(const Enemy *enemies, int count, Vec2 playerPos);
 
-#endif // ENEMY_H
+#endif 
