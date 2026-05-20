@@ -12,9 +12,9 @@ static const char KEY_UP    = 'w';
 static const char KEY_DOWN  = 's';
 static const char KEY_LEFT  = 'a';
 static const char KEY_RIGHT = 'd';
-static const char KEY_PICK  = 'e';  // recoger item
-static const char KEY_USE   = 'r';  // leer/usar item
-static const char KEY_DROP  = 'q';  // soltar item
+static const char KEY_PICK  = 'e';  
+static const char KEY_USE   = 'r';  
+static const char KEY_DROP  = 'q';  
 static const char KEY_ENTER = '\n';
 
 #endif 
