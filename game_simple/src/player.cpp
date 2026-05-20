@@ -2,7 +2,7 @@
 #include "../include/map.h"
 
 void player_init(Player *p){
-    p->pos.r=3;
+    p->pos.r=4;
     p->pos.c=19;
     p->item=ITEM_NONE;
     p->alive=true;

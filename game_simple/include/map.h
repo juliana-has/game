@@ -6,7 +6,8 @@
 extern int gMap[ROWS][COLS];
 
 void map_init();
-bool map_can_walk(int r, int c);
-int  map_get_tile(int r, int c);
+bool map_can_walk(int r,int c);
+int  map_get_tile(int r,int c);
+int  map_get_room(int r,int c);
 
 #endif

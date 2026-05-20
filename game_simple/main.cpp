@@ -10,10 +10,7 @@ static void sleep_ms(int ms){Sleep(ms);}
 static int  kb_hit(){return _kbhit();}
 static char kb_get(){return (char)_getch();}
 static char kb_block(){return (char)_getch();}
-static void go_home(){
-    COORD c={0,0};
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);
-}
+static void go_home(){COORD c={0,0};SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),c);}
 static void hide_cur(){
     HANDLE h=GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO ci;
@@ -23,8 +20,7 @@ static void hide_cur(){
 }
 static void clr_screen(){
     HANDLE h=GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD c={0,0};
-    DWORD w;
+    COORD c={0,0}; DWORD w;
     CONSOLE_SCREEN_BUFFER_INFO i;
     GetConsoleScreenBufferInfo(h,&i);
     DWORD sz=(DWORD)i.dwSize.X*(DWORD)i.dwSize.Y;
@@ -52,12 +48,7 @@ static void plat_restore(){
     tcsetattr(STDIN_FILENO,TCSANOW,&orig_t);
 }
 static void sleep_ms(int ms){usleep(ms*1000);}
-static int kb_hit(){
-    char c;
-    int n=(int)read(STDIN_FILENO,&c,1);
-    if(n==1){ungetc(c,stdin);return 1;}
-    return 0;
-}
+static int kb_hit(){char c;int n=(int)read(STDIN_FILENO,&c,1);if(n==1){ungetc(c,stdin);return 1;}return 0;}
 static char kb_get(){int c=fgetc(stdin);return c==EOF?0:(char)c;}
 static char kb_block(){
     plat_restore();
@@ -82,10 +73,40 @@ static void clr_screen(){printf("\033[2J\033[H");fflush(stdout);}
 #include "include/game.h"
 #include "include/audio.h"
 
+static void get_room_bounds(int room,int *r1,int *c1,int *r2,int *c2){
+    if(room==1){*r1=0;  *c1=0;  *r2=8;      *c2=18;}
+    else if(room==2){*r1=0;  *c1=21; *r2=8;      *c2=39;}
+    else if(room==3){*r1=10; *c1=0;  *r2=18;     *c2=18;}
+    else if(room==4){*r1=10; *c1=21; *r2=18;     *c2=39;}
+    else if(room==5){*r1=20; *c1=0;  *r2=ROWS-1; *c2=18;}
+    else            {*r1=20; *c1=21; *r2=ROWS-1; *c2=39;}
+}
+
+static const char* room_name(int room){
+    if(room==1) return "Sala principal";
+    if(room==2) return "Dormitorio";
+    if(room==3) return "Hab. media izq.";
+    if(room==4) return "Bano";
+    if(room==5) return "Hab. final izq.";
+    if(room==6) return "Hab. final der.";
+    return "Pasillo";
+}
+
 static void draw(Game *g){
     go_home();
-    for(int r=0;r<ROWS;r++){
-        for(int c=0;c<COLS;c++){
+
+    int pr=g->player.pos.r, pc=g->player.pos.c;
+    int curRoom=map_get_room(pr,pc);
+    if(curRoom==0) curRoom=1;
+
+    int r1,c1,r2,c2;
+    get_room_bounds(curRoom,&r1,&c1,&r2,&c2);
+
+    int viewH=r2-r1+1;
+    int viewW=c2-c1+1;
+
+    for(int r=r1;r<=r2;r++){
+        for(int c=c1;c<=c2;c++){
             char ch=' ';
             int t=gMap[r][c];
             if(t==TILE_WALL)   ch='#';
@@ -103,19 +124,21 @@ static void draw(Game *g){
                     ch=(e->type==0)?'B':'V';break;
                 }
             }
-            if(g->player.pos.r==r&&g->player.pos.c==c)
-                ch=g->player.hidden?'H':'@';
+            if(pr==r&&pc==c) ch=g->player.hidden?'H':'@';
 
             putchar(ch);
         }
         putchar('\n');
     }
-    printf("----------------------------------------\n");
+
+    for(int i=viewH;i<14;i++) printf("%-*s\n",viewW,"");
+
+    printf("%-40s\n", room_name(curRoom));
     printf("[WASD]mover [E]recoger [R]leer [Q]soltar\n");
-    printf("Objetos:%d/5  Inv:%s%s\n",
+    printf("Objetos:%d/5  Inv:%-20s%s\n",
         items_collected(g->items),
         g->player.item!=ITEM_NONE?items_name(g->player.item):"(vacio)",
-        g->player.hidden?"  [ESCONDIDA]":"");
+        g->player.hidden?"[ESCONDIDA]":"");
     if(g->messageTicks>0)
         printf("%-42s\n",g->message);
     else
@@ -124,9 +147,7 @@ static void draw(Game *g){
     fflush(stdout);
 }
 
-static void wait_key(){
-    kb_block();
-}
+static void wait_key(){kb_block();}
 
 static void screen_intro(){
     clr_screen();
@@ -135,8 +156,8 @@ static void screen_intro(){
     printf("  Nunca penso que la persona que decia amarla\n");
     printf("  pudiera ser de quien tuviera que huir.\n\n");
     printf("  Recoge los 5 objetos (*) y escondete en el\n");
-    printf("  armario ([) de la hab. inferior derecha.\n\n");
-    printf("  B = novio abusivo (te persigue si te acerca)\n");
+    printf("  armario ([) de la hab. final derecha.\n\n");
+    printf("  B = novio (persigue si te acerca)\n");
     printf("  V = conciencia (aparece al leer el celular)\n");
     printf("  Si te atrapan fuera del armario, mueres.\n\n");
     printf("  [cualquier tecla para empezar]\n");
@@ -145,7 +166,6 @@ static void screen_intro(){
 }
 
 static void screen_read(Game *g){
-    audio_play(SND_READ);
     clr_screen();
     printf("\n  [ %s ]\n\n",items_name(g->player.item));
     printf("%s\n\n",items_text(g->player.item));
@@ -208,6 +228,7 @@ int main(){
 
         if(g.phase==PHASE_PLAY){
             if((key=='r'||key=='R')&&g.player.item!=ITEM_NONE&&items_text(g.player.item)){
+                audio_play(SND_READ);
                 screen_read(&g);
                 clr_screen();
                 continue;

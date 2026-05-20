@@ -34,7 +34,10 @@ void game_update(Game *g,char key){
     if(key=='s'||key=='S') dr=1;
     if(key=='a'||key=='A') dc=-1;
     if(key=='d'||key=='D') dc=1;
-    if(dr||dc){ bool moved=player_move(&g->player,dr,dc); if(moved) audio_play(SND_STEP); }
+    if(dr||dc){
+        bool moved=player_move(&g->player,dr,dc);
+        if(moved) audio_play(SND_STEP);
+    }
 
     if(key=='e'||key=='E'){
         if(g->player.item==ITEM_NONE){
@@ -67,9 +70,8 @@ void game_update(Game *g,char key){
         }
     }
 
-    if(g->player.hidden){ audio_play(SND_HIDE); }
     if(g->player.hidden&&g->allCollected){
-        if(g->player.pos.r>=18&&g->player.pos.c>=36){
+        if(map_get_room(g->player.pos.r,g->player.pos.c)==6){
             g->phase=PHASE_WIN;
         }
     }

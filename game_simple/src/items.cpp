@@ -3,11 +3,11 @@
 static int absi2(int x){return x<0?-x:x;}
 
 void items_init(Item *items){
-    items[0].id=ITEM_PAPER;  items[0].pos.r=12; items[0].pos.c=5;  items[0].collected=false;
+    items[0].id=ITEM_PAPER;  items[0].pos.r=13; items[0].pos.c=5;  items[0].collected=false;
     items[1].id=ITEM_KEY;    items[1].pos.r=3;  items[1].pos.c=28; items[1].collected=false;
-    items[2].id=ITEM_CANDLE; items[2].pos.r=13; items[2].pos.c=10; items[2].collected=false;
-    items[3].id=ITEM_PHONE;  items[3].pos.r=12; items[3].pos.c=30; items[3].collected=false;
-    items[4].id=ITEM_LETTER; items[4].pos.r=19; items[4].pos.c=28; items[4].collected=false;
+    items[2].id=ITEM_CANDLE; items[2].pos.r=14; items[2].pos.c=12; items[2].collected=false;
+    items[3].id=ITEM_PHONE;  items[3].pos.r=13; items[3].pos.c=30; items[3].collected=false;
+    items[4].id=ITEM_LETTER; items[4].pos.r=ROWS-3; items[4].pos.c=28; items[4].collected=false;
 }
 
 Item* items_nearby(Item *items,int r,int c){

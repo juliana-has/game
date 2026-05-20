@@ -18,47 +18,22 @@ static void room(int r1,int c1,int r2,int c2){
 void map_init(){
     fill(0,0,ROWS-1,COLS-1,TILE_EMPTY);
 
-    room(0, 0,  8, 17);   // hab 1 - arriba izquierda
-    room(0, 21, 8, 39);   // hab 2 - arriba derecha
-    room(9, 0,  16,17);   // hab 3 - medio izquierda
-    room(9, 21, 16,39);   // hab 4 - medio derecha
-    room(17,0,  21,17);   // hab 5 - abajo izquierda
-    room(17,21, 21,39);   // hab 6 - abajo derecha (final)
+    room(0, 0,  8, 18);
+    room(0, 21, 8, 39);
+    room(10,0,  18,18);
+    room(10,21, 18,39);
+    room(20,0,  ROWS-1,18);
+    room(20,21, ROWS-1,39);
 
-    // armario hab 1
-    gMap[1][1] = TILE_CLOSET;
-    // armario hab 6 (objetivo)
-    gMap[20][38]= TILE_CLOSET;
+    gMap[1][1]       = TILE_CLOSET;
+    gMap[ROWS-2][38] = TILE_CLOSET;
 
-    // puertas entre hab 1 y hab 2 (fila 3, col 18-20)
-    gMap[3][17]= TILE_DOOR;
-    gMap[3][18]= TILE_FLOOR;
-    gMap[3][19]= TILE_FLOOR;
-    gMap[3][20]= TILE_FLOOR;
-    gMap[3][21]= TILE_DOOR;
-
-    // puertas hab 1 -> hab 3 (col 8, fila 8-9)
-    gMap[8][8] = TILE_DOOR;
-    gMap[9][8] = TILE_FLOOR;
-
-    // puertas hab 2 -> hab 4 (col 30, fila 8-9)
-    gMap[8][30]= TILE_DOOR;
-    gMap[9][30]= TILE_FLOOR;
-
-    // puertas hab 3 -> hab 4 (fila 12, col 17-21)
-    gMap[12][17]= TILE_DOOR;
-    gMap[12][18]= TILE_FLOOR;
-    gMap[12][19]= TILE_FLOOR;
-    gMap[12][20]= TILE_FLOOR;
-    gMap[12][21]= TILE_DOOR;
-
-    // puertas hab 3 -> hab 5 (col 8, fila 16-17)
-    gMap[16][8] = TILE_DOOR;
-    gMap[17][8] = TILE_FLOOR;
-
-    // puertas hab 4 -> hab 6 (col 30, fila 16-17)
-    gMap[16][30]= TILE_DOOR;
-    gMap[17][30]= TILE_FLOOR;
+    gMap[4][18] = TILE_DOOR; gMap[4][19] = TILE_FLOOR; gMap[4][20] = TILE_FLOOR; gMap[4][21] = TILE_DOOR;
+    gMap[9][8]  = TILE_DOOR; gMap[10][8] = TILE_FLOOR;
+    gMap[9][30] = TILE_DOOR; gMap[10][30]= TILE_FLOOR;
+    gMap[14][18]= TILE_DOOR; gMap[14][19]= TILE_FLOOR; gMap[14][20]= TILE_FLOOR; gMap[14][21]= TILE_DOOR;
+    gMap[19][8] = TILE_DOOR; gMap[20][8] = TILE_FLOOR;
+    gMap[19][30]= TILE_DOOR; gMap[20][30]= TILE_FLOOR;
 }
 
 bool map_can_walk(int r,int c){
@@ -70,4 +45,14 @@ bool map_can_walk(int r,int c){
 int map_get_tile(int r,int c){
     if(r<0||r>=ROWS||c<0||c>=COLS) return TILE_EMPTY;
     return gMap[r][c];
+}
+
+int map_get_room(int r,int c){
+    if(r>=0  && r<=8  && c>=0  && c<=18) return 1;
+    if(r>=0  && r<=8  && c>=21 && c<=39) return 2;
+    if(r>=10 && r<=18 && c>=0  && c<=18) return 3;
+    if(r>=10 && r<=18 && c>=21 && c<=39) return 4;
+    if(r>=20 && r<=ROWS-1 && c>=0  && c<=18) return 5;
+    if(r>=20 && r<=ROWS-1 && c>=21 && c<=39) return 6;
+    return 0;
 }
