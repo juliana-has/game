@@ -6,10 +6,6 @@
 #include "enemy.h"
 #include "items.h"
 
-// ============================================================
-//  Modulo principal del juego — estado global
-// ============================================================
-
 struct GameState {
     Player player;
     Enemy  enemies[MAX_ENEMIES];
@@ -23,15 +19,13 @@ struct GameState {
     bool   allCollected;
     int    readingItem;
     int    tickCount;
-
-    // Nuevos campos: narrativa y tiempo
-    bool   roomVisited[MAX_ROOMS];   // habitaciones ya visitadas
-    int    lastRoom;                 // habitacion donde estaba el tick anterior
-    int    elapsedSeconds;           // segundos jugados (para HUD)
-    int    bestScore;                // mejor marca cargada de archivo
-    char   hudMessage[128];          // mensaje flotante actual
-    int    hudMessageTicks;          // cuantos ticks queda visible
-    int    killedBy;                 // ENT_BOYFRIEND, ENT_CONSCIENCE, o -1
+    bool   roomVisited[MAX_ROOMS];   
+    int    lastRoom;                 
+    int    elapsedSeconds;          
+    int    bestScore;                
+    char   hudMessage[128];         
+    int    hudMessageTicks;          
+    int    killedBy;                 
 };
 
 void game_init(GameState *gs);
@@ -40,4 +34,4 @@ void game_handle_intro(GameState *gs);
 bool game_is_over(const GameState *gs);
 void game_reset(GameState *gs);
 
-#endif // GAME_H
+#endif 
